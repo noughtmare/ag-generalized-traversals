@@ -1,0 +1,95 @@
+-- vi:syntax=haskell
+imports
+{
+import           Data.Map  ( Map )
+import qualified Data.Map as Map
+}
+
+type Employees = [Employee]
+type Pets = [Pet]
+
+data Company
+  | Company staff :: Employees
+            salaries :: {Map Int Int}
+
+data Pet
+  | Pet name  :: String
+        type' :: String
+
+data Employee
+  | Employee id :: Int
+             name :: String
+             pets :: Pets
+
+deriving Company Pet Employee : Show
+
+{
+company :: Company
+company = Company [ Employee 1 "bob" [Pet "Rocky" "cat", Pet "Bullwinkle" "dog"]
+                  , Employee 2 "sally" [Pet "Inigo" "cat"]
+                  ] (Map.fromList [(1,12), (2,15)])
+}
+
+--
+
+attr Company Employees Employee Pets Pet
+  syn cats use {++} {[]} :: {[String]}
+
+sem Pet
+  | Pet lhs.cats = if @type' == "cat" then [@name] else []
+
+{
+cats :: Company -> [String]
+cats company = cats_Syn_Company (wrap_Company (sem_Company company) Inh_Company)
+}
+
+--
+
+attr Company Employees Employee Pets Pet
+  syn owners use {++} {[]} :: {[String]}
+
+attr Pets Pet
+  syn names use {++} {[]} :: {[String]}
+
+sem Pet
+  | Pet lhs.names = [@name]
+
+sem Employee
+  | Employee lhs.owners
+      = map (\petName -> petName ++ " belongs to " ++ @name) @pets.names
+
+{
+owners :: Company -> [String]
+owners company
+  = owners_Syn_Company (wrap_Company (sem_Company company) Inh_Company)
+}
+
+--
+
+attr Company
+  syn salaryBump :: Company
+
+attr Employees Employee Pets Pet
+  syn copy :: self
+
+attr Employees Employee
+  chn bumpSalaries :: {Map Int Int}
+
+attr Pets Pet
+  syn hasDog use {||} {False} :: Bool
+
+sem Pet
+  | Pet lhs.hasDog = @type' == "dog"
+
+sem Employee
+  | Employee +bumpSalaries = if @pets.hasDog then Map.adjust (+5) @id else id
+
+sem Company
+  | Company staff.bumpSalaries = @salaries
+            lhs.salaryBump = Company @staff.copy @staff.bumpSalaries
+
+{
+salaryBump :: Company -> Company
+salaryBump company
+  = salaryBump_Syn_Company (wrap_Company (sem_Company company) Inh_Company)
+}

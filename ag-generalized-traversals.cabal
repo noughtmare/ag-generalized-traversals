@@ -1,0 +1,36 @@
+cabal-version:       >=1.10
+-- Initial package description 'ag-generalized-traversals.cabal' generated
+-- by 'cabal init'.  For further documentation, see
+-- http://haskell.org/cabal/users-guide/
+
+name:                ag-generalized-traversals
+version:             0.1.0.0
+-- synopsis:
+-- description:
+-- bug-reports:
+-- license:
+license-file:        LICENSE
+author:              Jaro Reinders
+maintainer:          jaro.reinders@gmail.com
+-- copyright:
+-- category:
+build-type:         Custom
+extra-source-files:
+  CHANGELOG.md
+  uuagc_options
+  src/Company.ag
+
+custom-setup
+  setup-depends:
+      base         >=4.13   && <4.15
+    , Cabal        >=3.0
+    , uuagc        >=0.9.53 && <0.10
+    , uuagc-cabal  >=1.2    && <1.3
+
+executable ag-generalized-traversals
+  main-is:             Main.hs
+  other-modules:       Company
+  build-depends:       base >=4.13 && <4.14
+                     , containers
+  hs-source-dirs:      src
+  default-language:    Haskell2010
