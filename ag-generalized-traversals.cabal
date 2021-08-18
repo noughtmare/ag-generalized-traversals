@@ -1,4 +1,4 @@
-cabal-version:       >=1.10
+cabal-version:       2.0
 -- Initial package description 'ag-generalized-traversals.cabal' generated
 -- by 'cabal init'.  For further documentation, see
 -- http://haskell.org/cabal/users-guide/
@@ -8,7 +8,7 @@ version:             0.1.0.0
 -- synopsis:
 -- description:
 -- bug-reports:
--- license:
+license:             BSD3
 license-file:        LICENSE
 author:              Jaro Reinders
 maintainer:          jaro.reinders@gmail.com
@@ -30,7 +30,8 @@ custom-setup
 executable ag-generalized-traversals
   main-is:             Main.hs
   other-modules:       Company
-  build-depends:       base >=4.13 && <4.14
+  autogen-modules:     Company
+  build-depends:       base >=4.13 && <4.15
                      , containers
   hs-source-dirs:      src
   default-language:    Haskell2010
